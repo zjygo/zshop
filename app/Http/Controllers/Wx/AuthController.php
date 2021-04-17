@@ -92,19 +92,13 @@ class AuthController extends Controller
         if(!$lock){
             return ['errno' => 702, 'errmsg' => '验证码未超过1分钟，不能发送'];
         }
-        $countkey = 'register_captcha_count_'.$mobile;
-        if(Cache::has($countkey)){
-            $count = Cache::increment('register_captcha_count_'.$mobile);
-            if($count >10){
-                return ['errno' => 702, 'errmsg' => '验证码当天发送不能超过10次'];
-            }
-        }else{
-            Cache::put($countkey, 1, Carbon::tomorrow()->diffInSeconds(now()));
+        $isPass = (new UserServices())->checkMobileSendCaptchaCount($mobile);
+        if($isPass){
+            return ['errno' => 702, 'errmsg' => '验证码当天发送不能超过10次'];
         }
 
         // 使用redis保存手机号和验证码并且加入过期时间
         Cache::put('register_captcha_'.$mobile, $code, 600);
-
 
         // todo:发送短信
 
