@@ -7,3 +7,4 @@ use Illuminate\Support\Facades\Route;
 // Route::get('auth/register', '\App\Http\Controllers\Wx\AuthController@register');
 
 Route::post('auth/register', 'AuthController@register');
+Route::post('auth/regCaptcha', 'AuthController@regCaptcha');
